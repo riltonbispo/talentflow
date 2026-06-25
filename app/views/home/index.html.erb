@@ -1,2 +1,24 @@
 <h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+
+<%= form_with url: analyze_path,
+              method: :post,
+              data: { turbo: false } do |form| %>
+  <div>
+    <%= form.label :description, "Descrição da Vaga:" %>
+    <%= form.text_area :description, size: "40x10", placeholder: "Enter details..." %>
+  </div>
+  
+  <div>
+    <%= form.label :curriculum, "Curriculo MarkDown:" %>
+    <%= form.text_area :curriculum, size: "40x10", placeholder: "Enter details..." %>
+  </div>
+
+  <%= form.submit "Enviar" %>
+<% end %>
+
+<% if @result.present? %>
+  <h2>Resultado</h2>
+
+  <pre><%= @result %></pre>
+<% end %>
+
