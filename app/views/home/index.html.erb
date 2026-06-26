@@ -14,9 +14,11 @@
   <%= form.submit "Enviar" %>
 <% end %>
 
-<% if @result.present? %>
-  <h2>Resultado</h2>
+<% if @result_curriculum.present? %>
+  <pre><%= @result_curriculum %></pre>
+<% end %>
 
-  <pre><%= @result %></pre>
+<% if @result_email.present? %>
+  <pre><%= @result_email %></pre>
 <% end %>
 
