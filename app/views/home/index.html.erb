@@ -1,24 +1,164 @@
-<%= form_with url: analyze_path,
-              method: :post,
-              data: { turbo: false } do |form| %>
-  <div>
-    <%= form.label :description, "Descrição da Vaga:" %>
-    <%= form.text_area :description, size: "40x10", placeholder: "Enter details..." %>
-  </div>
-  
-  <div>
-    <%= form.label :curriculum, "Curriculo MarkDown:" %>
-    <%= form.text_area :curriculum, size: "40x10", placeholder: "Enter details..." %>
-  </div>
+<div class="flex-col gap-14">
 
-  <%= form.submit "Enviar" %>
-<% end %>
+  <%= form_with url: analyze_path,
+                method: :post,
+                data: { turbo: false } do |form| %>
 
-<% if @result_curriculum.present? %>
-  <pre><%= @result_curriculum %></pre>
-<% end %>
+    <div class="card bg-base-100 border border-base-200 rounded-[32px] shadow-xl overflow-hidden">
 
-<% if @result_email.present? %>
-  <pre><%= @result_email %></pre>
-<% end %>
+      <div class="flex justify-between items-center px-8 py-6 border-b border-base-200">
+        <div>
+          <h2 class="text-3xl font-bold">
+            Análise de Currículo
+          </h2>
 
+          <p class="text-base-content/50">
+            Cole os dois campos e clique em analisar.
+          </p>
+        </div>
+
+        <div class="text-sm tracking-[0.3em] uppercase text-base-content/60">
+          <span class="text-primary mr-2">●</span>
+          Gemini · 1.5 Pro
+        </div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 divide-x divide-base-200">
+
+        <div class="p-8">
+          <label class="label font-bold uppercase tracking-widest text-xs">
+            Descrição da vaga
+          </label>
+          <%= form.text_area :description,
+                placeholder: "Cole aqui a descrição da vaga...",
+                class: "textarea textarea-ghost w-full h-80 resize-none text-lg focus:outline-none" %>
+        </div>
+
+        <div class="p-8">
+          <label class="label font-bold uppercase tracking-widest text-xs">
+            Currículo (Markdown)
+          </label>
+          <%= form.text_area :curriculum,
+                placeholder: "# Seu Nome\n\n## Experiência...",
+                class: "textarea textarea-ghost w-full h-80 resize-none text-lg focus:outline-none" %>
+        </div>
+      </div>
+
+      <div class="border-t border-base-200 py-10">
+        <div class="flex justify-center">
+          <%= form.submit "✨ Analisar com IA",
+                class: "btn btn-primary btn-lg rounded-2xl px-12 shadow-lg" %>
+        </div>
+      </div>
+
+    </div>
+  <% end %>
+
+  <% if @result_curriculum.present? || @result_email.present? %>
+    <section class="mt-16">
+
+      <div class="mb-8">
+        <h2 class="text-4xl font-bold">Resultados</h2>
+        <p class="text-base-content/60">
+          Pronto. Revise, copie ou baixe seu material adaptado.
+        </p>
+      </div>
+
+      <div class="tabs tabs-lift">
+        <label class="tab">
+          <input type="radio" name="result_tabs" checked="checked" />
+          📄 Currículo
+        </label>
+
+        <div class="tab-content bg-base-100 border-base-300 p-8">
+          <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+              <div class="card bg-base-100 border shadow-xl">
+                <div class="card-body">
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold">
+                      CURRICULO-OTIMIZADO.md
+                    </span>
+
+                    <button class="btn btn-sm btn-outline">
+                      Copiar
+                    </button>
+                  </div>
+
+                  <div class="divider"></div>
+
+                  <article class="prose max-w-none">
+                    <%= simple_format(@result_curriculum) %>
+                  </article>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card bg-base-100 border shadow">
+                <div class="card-body">
+                  <h3 class="font-bold mb-4">Ações</h3>
+
+                  <button class="btn btn-outline w-full">
+                    Copiar Markdown
+                  </button>
+
+                  <button class="btn btn-outline w-full">
+                    Baixar Markdown
+                  </button>
+
+                  <button class="btn btn-outline w-full">
+                    Baixar PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <label class="tab">
+          <input type="radio" name="result_tabs" />
+          ✉️ E-mail
+        </label>
+
+        <div class="tab-content bg-base-100 border-base-300 p-8">
+          <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+              <div class="card bg-base-100 border shadow-xl">
+                <div class="card-body">
+                  <div class="flex justify-between items-center">
+                    <span class="font-bold">
+                      EMAIL.md
+                    </span>
+                    <button class="btn btn-sm btn-outline">
+                      Copiar
+                    </button>
+                  </div>
+                  <div class="divider"></div>
+                  <article class="prose max-w-none">
+                    <%= simple_format(@result_email) %>
+                  </article>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="card bg-base-100 border shadow">
+                <div class="card-body">
+                  <h3 class="font-bold mb-4">Ações</h3>
+                  <button class="btn btn-outline w-full">
+                    Copiar E-mail
+                  </button>
+                  <button class="btn btn-outline w-full">
+                    Baixar TXT
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  <% end %>
+
+</div>
