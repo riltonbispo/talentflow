@@ -49,7 +49,10 @@ class HomeController < ApplicationController
       - Não utilize emojis.
       - Não utilize negrito para destacar compatibilidade.
       - Não crie seções como "Highlights", "Compatibilidade com a vaga", "Resumo das alterações" ou similares.
-      - Preserve um português natural e profissional.
+      - Preserve um português natural, profissional e gramaticalmente correto.
+      - Revise todo o texto antes de responder para eliminar erros de concordância, construções artificiais, palavras com "(a)", repetições e frases típicas de IA.
+
+      - Na seção de competencias deixe apenas 18 que mais fazem sentido com a vaga
 
       ## Formato esperado
 
@@ -63,6 +66,43 @@ class HomeController < ApplicationController
       - Utilize Markdown apenas para estruturar o documento com títulos (###), listas (-) e separadores (---).
       - O único uso permitido de `**` é no nome das seções e no cargo da experiência profissional, seguindo o padrão do currículo original.
       - Nunca destaque tecnologias como Angular, TypeScript, HTML5, CSS, JavaScript, APIs REST, PostgreSQL, React, Sass, ES6+, Scrum, Git ou quaisquer outras usando negrito.
+
+      ## Estilo de escrita
+
+      - Escreva todo o currículo em terceira pessoa implícita, como é padrão em currículos.
+      - Nunca utilize expressões como:
+        - "Comprometido(a)"
+        - "Dedicado(a)"
+        - "Apaixonado(a)"
+        - "Motivado(a)"
+        - "Profissional comprometido(a)"
+        - "Atua em..."
+        - "Trabalha com..."
+        - "Possui experiência..."
+      - Evite qualquer palavra com "(a)" ou marcações de gênero. O texto deve ser completamente neutro.
+      - Nunca escreva frases iniciadas por verbos na terceira pessoa como "Atua", "Desenvolve", "Participa", "Possui", "Realiza", "Trabalha", "É responsável por" quando estiver descrevendo o resumo profissional.
+      - O resumo profissional deve ser escrito como um parágrafo nominal, descrevendo experiência e competências, por exemplo:
+
+        "Desenvolvedor Full Stack com experiência em Python, React, Node.js e AWS, atuação em desenvolvimento de aplicações web, integração de APIs REST, bancos de dados relacionais e ambientes ágeis, com foco em qualidade de código, testes automatizados e pipelines CI/CD."
+
+      - Prefira construções como:
+        - "Experiência em..."
+        - "Vivência com..."
+        - "Conhecimento em..."
+        - "Atuação em..."
+        - "Foco em..."
+        - "Participação em..."
+        - "Desenvolvimento de..."
+      - Nunca utilize linguagem de autopromoção ou adjetivos subjetivos.
+
+      ## Validação obrigatória antes de responder
+
+      Antes de retornar o currículo, revise todo o texto e confirme que:
+
+      - Não existe nenhuma palavra contendo "(a)".
+      - O resumo profissional não inicia com "Atua", "Possui", "Desenvolve", "Participa", "Realiza", "Trabalha" ou expressões semelhantes.
+      - Não há erros de concordância verbal ou nominal.
+      - O texto está adequado ao padrão de currículos profissionais brasileiros.
 
     PROMPT
 
@@ -91,56 +131,97 @@ class HomeController < ApplicationController
     @result_curriculum = json_curriculum["candidates"][0]["content"]["parts"][0]["text"]
 
     prompt_email = <<~PROMPT
-      Você é um especialista em recrutamento e comunicação profissional.
+      Você é um recrutador experiente e especialista em comunicação profissional.
 
-      Sua tarefa é escrever um e-mail de candidatura personalizado utilizando EXCLUSIVAMENTE o currículo abaixo e a descrição da vaga.
+      Sua tarefa é escrever um e-mail de candidatura NATURAL utilizando EXCLUSIVAMENTE as informações do currículo abaixo e da descrição da vaga.
 
-      ## Descrição da vaga
+      =========================
+      DESCRIÇÃO DA VAGA
+      =========================
 
       #{description}
 
-      ## Currículo que será enviado em anexo
+      =========================
+      CURRÍCULO
+      =========================
 
       #{@result_curriculum}
 
-      ## Objetivo
+      =========================
+      OBJETIVO
+      =========================
 
-      Escreva um e-mail que desperte interesse do recrutador e reflita exatamente o currículo acima.
+      Escreva um e-mail que pareça ter sido escrito pelo próprio candidato, e não por uma IA.
 
-      ## Instruções
+      O e-mail deve ser simples, direto e agradável de ler.
 
-      - Leia atentamente todo o currículo.
-      - Considere que este currículo é o documento que será enviado em anexo.
-      - Utilize somente informações presentes nele.
-      - Nunca mencione experiências, tecnologias ou competências que não apareçam no currículo.
-      - Destaque apenas os pontos mais relevantes para a vaga.
-      - Caso exista o nome da empresa, mencione-o naturalmente.
-      - Caso exista o cargo, utilize-o.
-      - Caso exista o nome do recrutador, utilize-o na saudação.
-      - Caso exista um e-mail de candidatura na descrição da vaga, gere o corpo do e-mail.
-      - Caso não exista e-mail de candidatura, responda apenas:
-        "Nenhum e-mail de candidatura foi encontrado na descrição da vaga."
+      Imagine que o candidato está enviando seu currículo para um recrutador pela primeira vez.
 
-      - Não copie trechos do currículo literalmente.
-      - Faça um resumo das competências mais relevantes.
-      - O e-mail deve parecer escrito por uma pessoa.
-      - Seja cordial e objetivo.
-      - Evite exageros.
+      =========================
+      REGRAS
+      =========================
+
+      - Utilize APENAS informações presentes no currículo.
+      - Nunca invente experiências, tecnologias ou competências.
+      - Nunca copie trechos do currículo literalmente.
+      - Faça um resumo do perfil.
+      - Destaque apenas o que faz sentido para a vaga.
+      - Se existir nome da empresa, mencione-o naturalmente.
+      - Se existir o cargo, mencione-o.
+      - Se existir o nome do recrutador, utilize-o na saudação.
+      - Se não existir nome, utilize "Olá,".
+      - Informe que o currículo segue em anexo.
       - Não utilize Markdown.
-      - Não utilize emojis.
-      - Não invente informações.
+      - Não utilize listas.
+      - Não utilize frases excessivamente formais.
+      - Não utilize palavras como:
+        - "manifestar"
+        - "venho por meio deste"
+        - "tenho certeza de que"
+        - "acredito que minhas qualificações"
+        - "coloco-me à disposição"
+        - "é com grande satisfação"
+        - "conforme anunciado"
 
-      ## Estrutura
+      Evite qualquer linguagem típica de IA ou carta de apresentação.
 
-      - Saudação
-      - Apresentação
-      - Interesse pela vaga
-      - Relação entre as competências do currículo e a vaga
-      - Informar que o currículo segue em anexo
-      - Agradecimento
-      - Assinatura
+      =========================
+      ESTILO
+      =========================
 
-      ## Assinatura
+      O texto deve parecer escrito por uma pessoa.
+
+      Prefira frases curtas.
+
+      Use linguagem simples.
+
+      Evite adjetivos exagerados.
+
+      Evite repetir tecnologias.
+
+      O tamanho ideal é entre 150 e 250 palavras.
+
+      =========================
+      ESTRUTURA
+      =========================
+
+      Saudação
+
+      Apresentação breve
+
+      Interesse pela vaga
+
+      Resumo das experiências mais relevantes relacionadas à vaga
+
+      Informar que o currículo segue em anexo
+
+      Agradecimento
+
+      Assinatura
+
+      =========================
+      ASSINATURA
+      =========================
 
       Atenciosamente,
 
@@ -152,9 +233,57 @@ class HomeController < ApplicationController
       github.com/riltonbispo
       riltonbispo.vercel.app
 
-      ## Formato esperado
+      =========================
+      FORMATO DA RESPOSTA
+      =========================
 
-      Retorne apenas o texto do e-mail.
+      Retorne apenas o texto do e-mail, seguindo exatamente este formato:
+
+      Assunto: <assunto>
+
+      <corpo do e-mail>
+
+      Regras para o assunto:
+
+      - Deve ter entre 4 e 10 palavras.
+      - Deve resumir o objetivo do e-mail.
+      - Sempre mencionar o cargo quando ele estiver disponível.
+      - Se o nome da empresa estiver disponível, mencioná-lo naturalmente.
+      - Não utilize emojis.
+      - Não utilize aspas.
+      - Não utilize pontuação desnecessária.
+
+      Exemplos de assunto:
+
+      Assunto: Candidatura - Desenvolvedor Full Stack
+      Assunto: Desenvolvedor Full Stack | Pantheon
+      Assunto: Interesse na vaga de Assistente de TI
+
+      Após a linha do assunto, deixe uma linha em branco e escreva apenas o corpo do e-mail.
+
+      Não escreva nenhuma explicação antes ou depois do e-mail.
+
+      =========================
+      EXEMPLO DE TOM (NÃO COPIAR)
+      =========================
+
+      Olá,
+
+      Me chamo João.
+
+      Gostaria de me candidatar à vaga de Desenvolvedor Back-end.
+
+      Tenho experiência com desenvolvimento de aplicações web, criação de APIs e integração com bancos de dados. Ao longo da minha trajetória participei de projetos utilizando Python, JavaScript e PostgreSQL, sempre buscando entregar soluções simples e de qualidade.
+
+      Acredito que minha experiência esteja alinhada com a oportunidade e gostaria de participar do processo seletivo.
+
+      Segue meu currículo em anexo para avaliação.
+
+      Obrigado pela atenção.
+
+      Atenciosamente,
+
+      João
     PROMPT
 
     response_email = Net::HTTP.post(
