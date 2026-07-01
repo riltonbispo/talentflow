@@ -303,6 +303,9 @@ class HomeController < ApplicationController
     json_email = JSON.parse(response_email.body)
     @result_email = json_email["candidates"][0]["content"]["parts"][0]["text"]
 
-    render "home/index"
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :index }
+    end
   end
 end
